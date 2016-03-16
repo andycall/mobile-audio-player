@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <meta name="viewport" content="width=360" />
+</head>
+<body>
+  <ul>
+    <li class="list" data-href="http://localhost:9020/halfbottle.mp3">
+      <div>HalfBottle</div>
+      <button class="play-button">Play</button>
+    </li>
+    <li class="list" data-href="http://localhost:9020/tfboys.mp3">
+      <div>TF boys</div>
+      <button class="play-button">Play</button>
+    </li>
+  </ul>
+  <div class="play_state">
+    Now played time: <span id="played"></span>
+  </div>
+  <div class="play_state">
+    Player log
+    <div id="player_status">
+
+    </div>
+  </div>
+  <div id="audioPlayer"></div>
+</body>
+<script src="static/jquery.min.js"></script>
+<script src="player.js"></script>
+<script>
+  var player = $('#audioPlayer').audioPlayer({
+    controls: true,
+    loop: false,
+    debug: false,
+    src: 'http://localhost:9020/halfbottle.mp3',
+    onSrcChange: function (e, src) {
+      console.log('src change', src);
+      $('#player_status').append('<p>src change: ' + src + '</p>');
+    },
+    onAudioEnd: function (e) {
+      console.log('this sound is end!');
+      $('#player_status').append('<p>sound is end</p>');
+    },
+    onPlaying: function (e, second) {
+      console.log('current played', second);
+      $('#played').html(second.toFixed(2) + 's');
+    },
+    onPause: function (e, src) {
+      console.log('sound paused', src);
+      $('#player_status').append('<p>sound pause: ' + src + '</p>');
+    },
+    onPlay: function (e, src) {
+      console.log('sound is going to play!', src);
+      $('#player_status').append('<p>sound is going to play: ' + src + '</p>')
+    },
+    onError: function (e, error) {
+      console.log(error);
+    },
+    selector: {
+      played: '#played',
+      playButton: '.play-button'
+    }
+  });
+
+  $('.play-button').on('click', function (e) {
+    var button = e.target;
+    var url = $(button).parents('li').attr('data-href');
+
+    player.play(url, button);
+  })
+</script>
+</html>
